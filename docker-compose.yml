@@ -1,0 +1,11 @@
+version: "3.1"
+
+services:
+  postgres:
+    image: postgres:12.7
+    environment:
+      POSTGRES_DB: todo-db
+      POSTGRES_USER: brunoreis
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
