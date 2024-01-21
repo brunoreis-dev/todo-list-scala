@@ -30,7 +30,7 @@ class TodoRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implici
     ) += (description, true)
   }
   def list(): Future[Seq[Todo]] = db.run {
-    query.result
+    query.sortBy(_.id.asc).result
   }
   def delete(id: Long): Future[Int] = db.run {
     query.filter(_.id === id).delete
