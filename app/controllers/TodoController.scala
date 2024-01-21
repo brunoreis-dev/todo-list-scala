@@ -35,23 +35,28 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents, r
     val requestBodyJson: Option[JsValue] = request.body.asJson
     requestBodyJson match {
       case Some(json) =>
-        val description = (json \ "description").as[String]
-        val completed = (json \ "completed").as[Boolean]  
+        val description = (json \ "description").as[String] 
 
-        repo.create(description, completed).map { _ =>
+        repo.create(description).map { _ =>
           Ok(Json.toJson("Success"))
         }
 
       case None =>
-        Future.successful(BadRequest(Json.toJson("Erro: Corpo da solicitação não é um JSON válido")))
+        Future.successful(BadRequest(Json.toJson("Error: Corpo da solicitação não é um JSON válido")))
     }
   }
 
-  def delete() = Action { implicit request: Request[AnyContent] =>
-    Ok("Todo Deleted")
+  def delete(id: Long) = Action.async { implicit request: Request[AnyContent] =>
+    repo.delete(id).map {
+      case 1 => Ok(Json.toJson("Deleted"))
+      case 0 => Ok(Json.toJson("Id not found"))
+    }
   }
 
-  def check() = Action { implicit request: Request[AnyContent] =>
-    Ok("Todo done")
+  def check(id: Long) = Action.async { implicit request: Request[AnyContent] =>
+    repo.check(id).map {
+      case 1 => Ok(Json.toJson("Checked"))
+      case 0 => Ok(Json.toJson("Id not found"))
+    }
   }
 }
