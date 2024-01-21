@@ -10,7 +10,7 @@
 
 GET / controllers.TodoController.index()
 POST / controllers.TodoController.create()
-DELETE / controllers.TodoController.delete()
-PATCH / controllers.TodoController.check()
+DELETE /:id controllers.TodoController.delete(id: Long)
+PATCH /:id controllers.TodoController.check(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
