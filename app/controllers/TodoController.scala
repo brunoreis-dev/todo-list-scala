@@ -35,10 +35,9 @@ class TodoController @Inject()(val controllerComponents: ControllerComponents, r
     val requestBodyJson: Option[JsValue] = request.body.asJson
     requestBodyJson match {
       case Some(json) =>
-        val description = (json \ "description").as[String]
-        val completed = (json \ "completed").as[Boolean]  
+        val description = (json \ "description").as[String] 
 
-        repo.create(description, completed).map { _ =>
+        repo.create(description).map { _ =>
           Ok(Json.toJson("Success"))
         }
 

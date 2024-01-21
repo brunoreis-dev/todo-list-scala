@@ -23,11 +23,11 @@ class TodoRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implici
 
   val query = TableQuery[TodosTable]
 
-  def create(description: String, completed: Boolean): Future[Todo] = db.run {
+  def create(description: String): Future[Todo] = db.run {
     (query.map(t => (t.description, t.completed))
       returning query.map(_.id)
       into ((descriptionCompleted, id) => Todo(id, descriptionCompleted._1, descriptionCompleted._2))
-    ) += (description, completed)
+    ) += (description, true)
   }
   def list(): Future[Seq[Todo]] = db.run {
     query.result
@@ -38,6 +38,7 @@ class TodoRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implici
   def check(id: Long): Future[Int] = db.run {
     val foundTodo = Await.result(db.run(query.result.headOption), Duration.Inf)
     val completed = foundTodo.map(_.completed).getOrElse(false)
+    println(completed)
 
     val q = for { c <- query if c.id === id } yield c.completed
     q.update(!completed)
